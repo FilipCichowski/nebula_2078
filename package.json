@@ -1,0 +1,23 @@
+{
+  "name": "nebula_2078",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scss": "node-sass --watch scss -o css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FilipCichowski/nebula_2078.git"
+  },
+  "author": "Filip Cichowski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FilipCichowski/nebula_2078/issues"
+  },
+  "homepage": "https://github.com/FilipCichowski/nebula_2078#readme",
+  "dependencies": {
+    "node-sass": "^5.0.0"
+  }
+}
