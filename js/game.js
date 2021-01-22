@@ -92,7 +92,7 @@ window.addEventListener('keyup', keyUp);
 function generateFloor() {
 	meshFloor = new THREE.Mesh(
 		new THREE.PlaneGeometry(1000, 1000, 10, 10),
-		new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: false})
+		new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: true})
 	);
 	meshFloor.rotation.x -= Math.PI / 2; // Rotate the floor 90 degrees
 	meshFloor.position.y = meshFloor.position.y - 50
