@@ -10,7 +10,7 @@ function init() {
 	document.getElementById("wrapper").style.display = "none";
 
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 45, 30000);
+	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 45, 30000);
 
 	camera.position.set(0, player.height, -5);
 	camera.lookAt(new THREE.Vector3(0, player.height , 0));
