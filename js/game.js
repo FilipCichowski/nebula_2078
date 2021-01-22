@@ -9,7 +9,7 @@ let USE_WIREFRAME = false;
 
 let loadingScreen = {
 	scene: new THREE.Scene(),
-	camera: new THREE.PerspectiveCamera(90, 1280 / 720, 0.1, 100),
+	camera: new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 100),
 	box: new THREE.Mesh(
 		new THREE.BoxGeometry(0.5, 0.5, 0.5),
 		new THREE.MeshBasicMaterial({ color: 0x4444ff })
@@ -52,7 +52,7 @@ let bullets = [];
 function init() {
 	document.getElementById("wrapper").style.display = "none";
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(90, 1280 / 720, 0.1, 1000);
+	camera = new THREE.PerspectiveCamera(90, window.innerWidth / innerHeight, 0.1, 1000);
 	clock = new THREE.Clock();
 
 	loadingScreen.box.position.set(0, 0, 5);
@@ -162,7 +162,7 @@ function init() {
 	camera.lookAt(new THREE.Vector3(0, player.height, 0));
 
 	renderer = new THREE.WebGLRenderer();
-	renderer.setSize(1280, 720);
+	renderer.setSize(window.innerWidth, window.innerHeight);
 
 	renderer.shadowMap.enabled = true;
 	renderer.shadowMap.type = THREE.BasicShadowMap;
