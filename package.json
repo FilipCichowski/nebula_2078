@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/FilipCichowski/nebula_2078#readme",
   "dependencies": {
-    "node-sass": "^5.0.0"
+    "node-sass": "^5.0.0",
+    "simplex-noise": "^2.4.0"
   }
 }
