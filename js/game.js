@@ -1,27 +1,14 @@
-
-
-var scene, camera, renderer, mesh, clock;
-var meshFloor, ambientLight, light;
-
-var crate, crateTexture, crateNormalMap, crateBumpMap;
-
-var keyboard = {};
-var player = { height: 1.8, speed: 0.2, turnSpeed: Math.PI * 0.02, canShoot: 0 };
-var USE_WIREFRAME = false;
-
-var loadingScreen = {
-	scene: new THREE.Scene(),
-	camera: new THREE.PerspectiveCamera(90, 1280 / 720, 0.1, 100),
-	box: new THREE.Mesh(
-		new THREE.BoxGeometry(0.5, 0.5, 0.5),
-		new THREE.MeshBasicMaterial({ color: 0x4444ff })
-	)
-};
-var loadingManager = null;
-var RESOURCES_LOADED = false;
+let scene, camera, renderer, mesh, clock;
+let meshFloor, ambientLight, light;
+let crate, crateTexture, crateNormalMap, crateBumpMap;
+let keyboard = {};
+const player = { height: 1.8, speed: 0.2, turnSpeed: Math.PI * 0.02, canShoot: 0 };
+const useWireframe = false;
+let loadingManager = null;
+let resourcesLoaded = false;
 
 // Models index
-var models = {
+let models = {
 	tent: {
 		obj: "models/Tent_Poles_01.obj",
 		mtl: "models/Tent_Poles_01.mtl",
@@ -37,25 +24,25 @@ var models = {
 		mtl: "models/Pirateship.mtl",
 		mesh: null
 	},
-	uzi: {
-		obj: "models/uziGold.obj",
-		mtl: "models/uziGold.mtl",
+	machine_gun: {
+		obj: "models/M4a1.obj",
+		mtl: "models/M4a1.mtl",
 		mesh: null,
 		castShadow: false
 	}
 };
 
 // Meshes index
-var meshes = {};
+let meshes = {};
 
 // Bullets array
-var bullets = [];
+let bullets = [];
 
 function init() {
 	document.getElementById("wrapper").style.display = "none";
 
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 45, 30000);
+	camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0, 30000);
 	camera.position.set(-900, -200, -900);
 	camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.4, 7500);
 	clock = new THREE.Clock();
@@ -63,8 +50,6 @@ function init() {
 	renderer = new THREE.WebGLRenderer({ antialias: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
-	
-
 
 	loadingManager = new THREE.LoadingManager();
 	loadingManager.onProgress = function (item, loaded, total) {
@@ -72,21 +57,18 @@ function init() {
 	};
 	loadingManager.onLoad = function () {
 		console.log("loaded all resources");
-		RESOURCES_LOADED = true;
+		resourcesLoaded = true;
 		onResourcesLoaded();
 	};
 
-	
-
-
-	mesh = new THREE.Mesh(
-		new THREE.BoxGeometry(1, 1, 1),
-		new THREE.MeshPhongMaterial({ color: 0xff4444, wireframe: USE_WIREFRAME })
-	);
-	mesh.position.y += 1;
-	mesh.receiveShadow = true;
-	mesh.castShadow = true;
-	scene.add(mesh);
+	// mesh = new THREE.Mesh(
+	// 	new THREE.BoxGeometry(1, 1, 1),
+	// 	new THREE.MeshPhongMaterial({ color: 0xff4444, wireframe: useWireframe })
+	// );
+	// mesh.position.y += 1;
+	// mesh.receiveShadow = true;
+	// mesh.castShadow = true;
+	// scene.add(mesh);
 
 	meshFloor = new THREE.Mesh(
 		new THREE.PlaneGeometry(200, 200, 200, 200),
@@ -108,39 +90,33 @@ function init() {
 	scene.add(light);
 
 
-	var textureLoader = new THREE.TextureLoader(loadingManager);
-	crateTexture = textureLoader.load("crate0/crate0_diffuse.jpg");
-	crateBumpMap = textureLoader.load("crate0/crate0_bump.jpg");
-	crateNormalMap = textureLoader.load("crate0/crate0_normal.jpg");
+	// let textureLoader = new THREE.TextureLoader(loadingManager);
+	// crateTexture = textureLoader.load("crate0/crate0_diffuse.jpg");
+	// crateBumpMap = textureLoader.load("crate0/crate0_bump.jpg");
+	// crateNormalMap = textureLoader.load("crate0/crate0_normal.jpg");
 
-	crate = new THREE.Mesh(
-		new THREE.BoxGeometry(3, 3, 3),
-		new THREE.MeshPhongMaterial({
-			color: 0xffffff,
-			map: crateTexture,
-			bumpMap: crateBumpMap,
-			normalMap: crateNormalMap
-		})
-	);
-	scene.add(crate);
-	crate.position.set(2.5, 3 / 2, 2.5);
-	crate.receiveShadow = true;
-	crate.castShadow = true;
+	// crate = new THREE.Mesh(
+	// 	new THREE.BoxGeometry(3, 3, 3),
+	// 	new THREE.MeshPhongMaterial({
+	// 		color: 0xffffff,
+	// 		map: crateTexture,
+	// 		bumpMap: crateBumpMap,
+	// 		normalMap: crateNormalMap
+	// 	})
+	// );
+	// scene.add(crate);
+	// crate.position.set(2.5, 3 / 2, 2.5);
+	// crate.receiveShadow = true;
+	// crate.castShadow = true;
 
-	// Load models
-	// REMEMBER: Loading in Javascript is asynchronous, so you need
-	// to wrap the code in a function and pass it the index. If you
-	// don't, then the index '_key' can change while the model is being
-	// downloaded, and so the wrong model will be matched with the wrong
-	// index key.
-	for (var _key in models) {
+	for (let _key in models) {
 		(function (key) {
 
-			var mtlLoader = new THREE.MTLLoader(loadingManager);
+			let mtlLoader = new THREE.MTLLoader(loadingManager);
 			mtlLoader.load(models[key].mtl, function (materials) {
 				materials.preload();
 
-				var objLoader = new THREE.OBJLoader(loadingManager);
+				let objLoader = new THREE.OBJLoader(loadingManager);
 
 				objLoader.setMaterials(materials);
 				objLoader.load(models[key].obj, function (mesh) {
@@ -170,18 +146,6 @@ function init() {
 	camera.position.set(0, player.height, -5);
 	camera.lookAt(new THREE.Vector3(0, player.height, 0));
 
-	// // renderer = new THREE.WebGLRenderer();
-	// // renderer.setSize(1280, 720);
-
-	// renderer = new THREE.WebGLRenderer({ antialias: true });
-	// renderer.setSize(window.innerWidth, window.innerHeight);
-	// document.body.appendChild(renderer.domElement);
-
-	// renderer.shadowMap.enabled = true;
-	// renderer.shadowMap.type = THREE.BasicShadowMap;
-
-	// document.body.appendChild(renderer.domElement);
-
 	let materialArray = [];
 	let texture_ft = new THREE.TextureLoader().load('../img/corona_ft.png');
 	let texture_bk = new THREE.TextureLoader().load('../img/corona_bk.png');
@@ -210,61 +174,55 @@ function init() {
 // Runs when all resources are loaded
 function onResourcesLoaded() {
 
-	// Clone models into meshes.
-	meshes["tent1"] = models.tent.mesh.clone();
-	meshes["tent2"] = models.tent.mesh.clone();
-	meshes["campfire1"] = models.campfire.mesh.clone();
-	meshes["campfire2"] = models.campfire.mesh.clone();
-	meshes["pirateship"] = models.pirateship.mesh.clone();
+	// // Clone models into meshes.
+	// meshes["tent1"] = models.tent.mesh.clone();
+	// meshes["tent2"] = models.tent.mesh.clone();
+	// meshes["campfire1"] = models.campfire.mesh.clone();
+	// meshes["campfire2"] = models.campfire.mesh.clone();
+	// meshes["pirateship"] = models.pirateship.mesh.clone();
 
-	// Reposition individual meshes, then add meshes to scene
-	meshes["tent1"].position.set(-5, 0, 4);
-	scene.add(meshes["tent1"]);
+	// // Reposition individual meshes, then add meshes to scene
+	// meshes["tent1"].position.set(-5, 0, 4);
+	// scene.add(meshes["tent1"]);
 
-	meshes["tent2"].position.set(-8, 0, 4);
-	scene.add(meshes["tent2"]);
+	// meshes["tent2"].position.set(-8, 0, 4);
+	// scene.add(meshes["tent2"]);
 
-	meshes["campfire1"].position.set(-5, 0, 1);
-	meshes["campfire2"].position.set(-8, 0, 1);
+	// meshes["campfire1"].position.set(-5, 0, 1);
+	// meshes["campfire2"].position.set(-8, 0, 1);
 
-	scene.add(meshes["campfire1"]);
-	scene.add(meshes["campfire2"]);
+	// scene.add(meshes["campfire1"]);
+	// scene.add(meshes["campfire2"]);
 
-	meshes["pirateship"].position.set(-11, -1, 1);
-	meshes["pirateship"].rotation.set(0, Math.PI, 0); // Rotate it to face the other way.
-	scene.add(meshes["pirateship"]);
+	// meshes["pirateship"].position.set(-11, -1, 1);
+	// meshes["pirateship"].rotation.set(0, Math.PI, 0); // Rotate it to face the other way.
+	// scene.add(meshes["pirateship"]);
 
 	// player weapon
-	meshes["playerweapon"] = models.uzi.mesh.clone();
-	meshes["playerweapon"].position.set(0, 2, 0);
-	meshes["playerweapon"].scale.set(10, 10, 10);
+	meshes["playerweapon"] = models.machine_gun.mesh.clone();
+	meshes["playerweapon"].position.set(0, 1, 0);
+	meshes["playerweapon"].scale.set(0.12, 0.12, 0.12);
 	scene.add(meshes["playerweapon"]);
 }
 
 function animate() {
 
-	// // Play the loading screen until resources are loaded.
-	if (RESOURCES_LOADED == false) {
+	if (resourcesLoaded == false) {
 		requestAnimationFrame(animate);
-
-		loadingScreen.box.position.x -= 0.05;
-		if (loadingScreen.box.position.x < -10) loadingScreen.box.position.x = 10;
-		loadingScreen.box.position.y = Math.sin(loadingScreen.box.position.x);
-
 		renderer.render(loadingScreen.scene, loadingScreen.camera);
 		return;
 	}
 
-	var time = Date.now() * 0.0005;
-	var delta = clock.getDelta();
+	let time = Date.now() * 0.0005;
+	let delta = clock.getDelta();
 
-	mesh.rotation.x += 0.01;
-	mesh.rotation.y += 0.02;
-	crate.rotation.y += 0.01;
+	// mesh.rotation.x += 0.01;
+	// mesh.rotation.y += 0.02;
+	// crate.rotation.y += 0.01;
 
 	// go through bullets array and update position
 	// remove bullets when appropriate
-	for (var index = 0; index < bullets.length; index += 1) {
+	for (let index = 0; index < bullets.length; index += 1) {
 		if (bullets[index] === undefined) continue;
 		if (bullets[index].alive == false) {
 			bullets.splice(index, 1);
@@ -301,18 +259,16 @@ function animate() {
 	// shoot a bullet
 	if (keyboard[32] && player.canShoot <= 0) { // spacebar key
 		// creates a bullet as a Mesh object
-		var bullet = new THREE.Mesh(
+		let bullet = new THREE.Mesh(
 			new THREE.SphereGeometry(0.05, 8, 8),
 			new THREE.MeshBasicMaterial({ color: 0xffffff })
 		);
-		// this is silly.
-		// var bullet = models.pirateship.mesh.clone();
 
-		// position the bullet to come from the player's weapon
+		//TODO: fix bullet position
 		bullet.position.set(
 			meshes["playerweapon"].position.x,
-			meshes["playerweapon"].position.y + 0.15,
-			meshes["playerweapon"].position.z
+			meshes["playerweapon"].position.y + 0.1,
+			meshes["playerweapon"].position.z 
 		);
 
 		// set the velocity of the bullet
@@ -346,7 +302,7 @@ function animate() {
 	);
 	meshes["playerweapon"].rotation.set(
 		camera.rotation.x,
-		camera.rotation.y - Math.PI,
+		camera.rotation.y + Math.PI,
 		camera.rotation.z
 	);
 
@@ -365,4 +321,5 @@ function keyUp(event) {
 window.addEventListener('keydown', keyDown);
 window.addEventListener('keyup', keyUp);
 
+//for debug purpose left uncomment
 window.onload = init;
