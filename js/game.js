@@ -38,7 +38,8 @@ let meshes = {};
 // Bullets array
 let bullets = [];
 
-function init() {
+function start() {
+	console.log("init")
 	document.getElementById("wrapper").style.display = "none";
 
 	scene = new THREE.Scene();
@@ -209,7 +210,7 @@ function animate() {
 
 	if (resourcesLoaded == false) {
 		requestAnimationFrame(animate);
-		renderer.render(loadingScreen.scene, loadingScreen.camera);
+		//renderer.render(loadingScreen.scene, loadingScreen.camera);
 		return;
 	}
 
@@ -322,4 +323,4 @@ window.addEventListener('keydown', keyDown);
 window.addEventListener('keyup', keyUp);
 
 //for debug purpose left uncomment
-window.onload = init;
+//window.onload = init;
