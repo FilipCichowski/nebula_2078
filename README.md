@@ -23,6 +23,8 @@ Nebula 2078 is JavaScript-based first person shooter game written using Three.js
 
 ## How to play?
 
+Play here: https://nebula-2078.herokuapp.com/ or:
+
 1. Download ZIP code and unzip it.
 2. Open code in VSC with Live Server extension installed, run index.html with it.
 3. Move by WSAD, rotate with left and right arrow, shoot with space. Enjoy!
